@@ -2,30 +2,71 @@
 <html lang="az">
 <head>
     <meta charset="UTF-8">
-    <title>Norclip - Avtomat Loqo Sistemi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Norclip - Öz Dizaynını Yarat</title>
     <style>
-        body { font-family: sans-serif; background: #f0f0f0; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .preview { position: relative; width: 100%; max-width: 700px; margin-bottom: 20px; }
-        .bg-img { width: 100%; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        body { font-family: sans-serif; background: #f4f4f4; display: flex; flex-direction: column; align-items: center; padding: 20px; }
         
-        .overlay {
-            position: absolute; bottom: 44.5%; left: 50%;
-            transform: translateX(-50%); width: 75%;
-            display: flex; justify-content: space-between; align-items: center; color: white;
+        /* Əsas Şəkil və Konstruktor Sahəsi */
+        .preview {
+            position: relative;
+            width: 100%;
+            max-width: 800px; /* Şəklin ölçüsünə görə tənzimləmə */
+            margin-bottom: 20px;
         }
-        #main-text { flex-grow: 1; text-align: center; font-size: 1.8vw; font-weight: bold; text-transform: uppercase; }
-        .logo-box { width: 3vw; height: 3vw; display: flex; align-items: center; justify-content: center; }
-        .logo-box img { max-width: 100%; max-height: 100%; filter: brightness(0) invert(1); }
 
+        /* Sənin yüklədiyin Norclip şəkli */
+        .bg-img {
+            width: 100%;
+            display: block;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        /* Mətn və Loqo Yerləşimi - Norclip ramkasının aşağı zolağı üçün */
+        .overlay {
+            position: absolute;
+            bottom: 44.5%; /* Şəkildəki qara zolağın tam üstü */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            pointer-events: none;
+        }
+
+        #main-text {
+            flex-grow: 1;
+            text-align: center;
+            font-size: 2vw; /* Ekran ölçüsünə görə avtomatik böyüyür */
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .logo-box { width: 2.5vw; height: 2.5vw; display: flex; align-items: center; justify-content: center; }
+        .logo-box img { max-width: 100%; max-height: 100%; filter: brightness(0) invert(1); } /* Loqonu ağ rəngə boyayır */
+
+        /* Panel */
         .panel { background: white; padding: 25px; border-radius: 15px; width: 100%; max-width: 450px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        input { width: 95%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; }
-        .order-btn { width: 100%; padding: 15px; background: #25D366; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        .inp-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input { width: 95%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
+        
+        .order-btn { width: 100%; padding: 15px; background: #25D366; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .order-btn:hover { background: #1ebe57; }
     </style>
 </head>
 <body>
 
+    <h2 style="margin-bottom: 30px;">Norclip Nömrə Qabı Konstruktoru</h2>
+
     <div class="preview">
-        <img src="https://raw.githubusercontent.com/agaeli1999/carplate/main/ramka-Norclip.jpg" class="bg-img">
+        <img src="https://raw.githubusercontent.com/agaeli1999/carplate/main/ramka-Norclip.jpg" class="bg-img" alt="Norclip Frame">
+        
         <div class="overlay">
             <div id="l-logo" class="logo-box"></div>
             <div id="main-text">MƏTN BURADA</div>
@@ -34,12 +75,16 @@
     </div>
 
     <div class="panel">
-        <label><b>1. Yazını yaz:</b></label>
-        <input type="text" id="inp-text" placeholder="Məs: ELVIN 010" oninput="draw()">
+        <div class="inp-group">
+            <label>1. Yazını yaz:</label>
+            <input type="text" id="inp-text" placeholder="Məs: AD SOYAD" oninput="draw()">
+        </div>
 
-        <label><b>2. Marka adını yaz (Loqo üçün):</b></label>
-        <input type="text" id="inp-logo" placeholder="Məs: BMW, Mercedes, TikTok" oninput="draw()">
-        <p style="font-size: 12px; color: #777;">*İstənilən dünya markasını ingiliscə yazın, loqo gələcək.</p>
+        <div class="inp-group">
+            <label>2. Loqo üçün marka adını yaz (ingiliscə):</label>
+            <input type="text" id="inp-logo" placeholder="Məs: BMW, Mercedes, Nike, Apple" oninput="draw()">
+            <p style="font-size: 12px; color: #777; margin-top: 5px;">*Axtardığınız markanın adını düzgün yazın.</p>
+        </div>
 
         <button class="order-btn" onclick="order()">WhatsApp ilə Sifariş</button>
     </div>
@@ -47,23 +92,36 @@
     <script>
         function draw() {
             const text = document.getElementById('inp-text').value;
-            const logo = document.getElementById('inp-logo').value.toLowerCase().replace(" ", "");
+            // Marka adını boşluqsuz və balaca hərflərlə təmizləyir
+            const logo = document.getElementById('inp-logo').value.trim().toLowerCase().replace(/ /g, "");
             
             document.getElementById('main-text').innerText = text || "MƏTN BURADA";
             
             if(logo) {
+                // Simple Icons-dan loqonu çəkir
                 const url = `https://cdn.simpleicons.org/${logo}`;
-                const img = `<img src="${url}" onerror="this.style.display='none'">`;
+                // Əgər loqo tapılmazsa, onerror işə düşür və şəkli gizlədir
+                const img = `<img src="${url}" onerror="this.parentElement.style.display='none'" onload="this.parentElement.style.display='flex'">`;
                 document.getElementById('l-logo').innerHTML = img;
                 document.getElementById('r-logo').innerHTML = img;
+            } else {
+                // Əgər loqo adı yazılmayıbsa, boşluqları təmizlə
+                document.getElementById('l-logo').innerHTML = "";
+                document.getElementById('r-logo').innerHTML = "";
             }
         }
 
         function order() {
             const text = document.getElementById('inp-text').value;
             const logo = document.getElementById('inp-logo').value;
+            
+            if(!text && !logo) {
+                alert("Zəhmət olmasa mətn və ya loqo daxil edin!");
+                return;
+            }
+
             const phone = "99450XXXXXXX"; // Öz nömrəni bura yaz
-            const msg = `Yeni Sifariş:%0A📝 Mətn: ${text}%0A🏎️ Loqo: ${logo}`;
+            const msg = `Yeni Nömrə Qabı Sifarişi:%0A📝 Mətn: ${text || 'Yoxdur'}%0A🏎️ Loqo: ${logo || 'Yoxdur'}`;
             window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
         }
     </script>
