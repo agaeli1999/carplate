@@ -1,1 +1,198 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Norclip Nömrə Qabı Konstruktoru</title>
+    <style>
+        :root { --plate-bg: #111; --text-color: #ffffff; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        
+        /* Nömrə Qabı Dizaynı */
+        .preview-container {
+            width: 100%;
+            max-width: 650px;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
 
+        .norclip-frame {
+            width: 100%;
+            height: 120px;
+            background-color: var(--plate-bg);
+            border-radius: 8px;
+            position: relative;
+            display: flex;
+            align-items: flex-end; /* Yazı aşağı hissədə (ramka üzərində) olur */
+            justify-content: center;
+            padding-bottom: 10px;
+            box-shadow: inset 0 0 15px #000;
+            border: 4px solid #222;
+        }
+
+        /* Norclip-in mərkəz hissəsi */
+        .canvas-area {
+            width: 90%;
+            height: 40px;
+            background: rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            border-radius: 4px;
+        }
+
+        #display-text {
+            color: var(--text-color);
+            font-size: 22px;
+            font-weight: bold;
+            text-transform: uppercase;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .display-icon { font-size: 24px; width: 40px; }
+
+        /* İdarəetmə Paneli */
+        .controls {
+            width: 100%;
+            max-width: 650px;
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; color: #444; }
+        
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus { border-color: #007bff; }
+
+        .icon-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+        .icon-item {
+            padding: 10px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: 0.2s;
+        }
+        .icon-item:hover, .icon-item.active { border-color: #007bff; background: #f0f7ff; }
+
+        .btn-whatsapp {
+            width: 100%;
+            padding: 15px;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .btn-whatsapp:hover { background-color: #1ebe57; }
+    </style>
+</head>
+<body>
+
+    <div class="preview-container">
+        <h2>Dizaynını Yarat</h2>
+        <div class="norclip-frame">
+            <div class="canvas-area">
+                <div id="left-icon-view" class="display-icon"></div>
+                <div id="display-text">MƏTN BURADA</div>
+                <div id="right-icon-view" class="display-icon"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="input-group">
+            <label>Yazılacaq Mətn:</label>
+            <input type="text" id="user-text" placeholder="Məs: ELVIN 010" oninput="updatePreview()">
+        </div>
+
+        <div class="input-group">
+            <label>Şrift Üslubu:</label>
+            <select id="font-style" onchange="updatePreview()">
+                <option value="'Segoe UI'">Modern (Sans-Serif)</option>
+                <option value="Georgia">Klassik (Serif)</option>
+                <option value="'Courier New'">Texniki (Monospace)</option>
+                <option value="Impact">Qalın (Bold Impact)</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>İkon Seçin:</label>
+            <div class="icon-grid">
+                <div class="icon-item" onclick="setIcon('🇦🇿')">🇦🇿</div>
+                <div class="icon-item" onclick="setIcon('🚩')">🚩</div>
+                <div class="icon-item" onclick="setIcon('👑')">👑</div>
+                <div class="icon-item" onclick="setIcon('🐺')">🐺</div>
+                <div class="icon-item" onclick="setIcon('🏎️')">🏎️</div>
+                <div class="icon-item" onclick="setIcon('')">Sil</div>
+            </div>
+        </div>
+
+        <button class="btn-whatsapp" onclick="sendToWhatsApp()">
+            WhatsApp ilə Sifariş Et
+        </button>
+    </div>
+
+    <script>
+        function updatePreview() {
+            const textInput = document.getElementById('user-text').value;
+            const fontInput = document.getElementById('font-style').value;
+            const display = document.getElementById('display-text');
+
+            display.innerText = textInput || "MƏTN BURADA";
+            display.style.fontFamily = fontInput;
+        }
+
+        let selectedIcon = "";
+        function setIcon(emoji) {
+            selectedIcon = emoji;
+            document.getElementById('left-icon-view').innerText = emoji;
+            document.getElementById('right-icon-view').innerText = emoji;
+        }
+
+        function sendToWhatsApp() {
+            const text = document.getElementById('user-text').value;
+            const font = document.getElementById('font-style').value;
+            const phone = "99450XXXXXXX"; // BURAYA ÖZ NÖMRƏNİ YAZ
+            
+            if(!text) {
+                alert("Zəhmət olmasa mətni daxil edin!");
+                return;
+            }
+
+            const message = `Salam, yeni nömrə qabı sifariş etmək istəyirəm:%0A%0A` +
+                            `📝 Mətn: ${text}%0A` +
+                            `🎨 Şrift: ${font}%0A` +
+                            `✨ İkon: ${selectedIcon || 'Yoxdur'}`;
+            
+            window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+        }
+    </script>
+
+</body>
+</html>
